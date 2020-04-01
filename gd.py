@@ -36,7 +36,7 @@ def evaluate(x, y, w):
             prediction.append(1)
         else:
             prediction.append(0)
-    return np.array(prediction)
+    return np.mean(np.array(prediction) == y)
 
 
 def gd(train, test, lr, patience):
@@ -53,8 +53,7 @@ def gd(train, test, lr, patience):
         # print("g: %f" % np.mean(g))
         w += lr * g
         # print("w: %f" % np.mean(w))
-        prediction = evaluate(test["feature"], test["label"], w)
-        acc = np.mean(prediction == test["label"])
+        acc = evaluate(test["feature"], test["label"], w)
         ll = log_likelihood(train["feature"], train["label"], w)
         if best is None or acc > best:
             best = acc

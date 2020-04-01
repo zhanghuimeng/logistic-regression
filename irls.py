@@ -44,8 +44,7 @@ def irls(train, test, lamb, patience):
         upd = update(train["feature"], train["label"], w, lamb)
         upd = upd.ravel()
         w = w - upd
-        prediction = evaluate(test["feature"], test["label"], w)
-        acc = np.mean(prediction == test["label"])
+        acc = evaluate(test["feature"], test["label"], w)
         if best is None or acc > best:
             best = acc
             wait = 0
@@ -92,11 +91,28 @@ else:
     step_list = []
     train_acc_list = []
     val_acc_list = []
+    test_acc_list = []
     w_list = []
 
     fold = 0
+    fold_train = {}
+    fold_val = {}
     for train_index, val_index in kf.split(X):
-        x_train, x_val = train["feature"][train_index], train["feature"][val_index]
-        y_train, y_val = train["label"][train_index], train["label"][val_index]
+        fold_train["feature"], fold_val["feature"] = train["feature"][train_index], train["feature"][val_index]
+        fold_train["label"], fold_val["label"] = train["label"][train_index], train["label"][val_index]
 
-        
+        w, acc_list, _ = irls(fold_train, fold_val, args.lamb, args.patience)
+        step_list.append(len(acc_list))
+        train_acc_list.append(evaluate(fold_train["feature"], fold_train["label"], w))
+        val_acc_list.append(acc_list[-1])
+        test_acc_list.append(evaluate(test["feature"], test["label"], w))
+        w_list.append(w)
+
+        print("\nFold: %d" % fold)
+        print("step: %d" % step_list[-1])
+        print("train acc: %f" % train_acc_list[-1])
+        print("val acc: %f" % val_acc_list[-1])
+        print("test acc: %f" % test_acc_list[-1])
+        print("L2 norm of w: %f" % np.linalg.norm(w)**2)
+
+        fold += 1
