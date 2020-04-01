@@ -85,7 +85,7 @@ if not args.cross:
     print("Final step: %d" % len(acc_list))
     print("Final training acc: %f" % evaluate(train["feature"], train["label"], w))
     print("Final testing acc: %f" % acc_list[-1])
-    print("Final L2 norm of w: %f" % np.linalg.norm(w)**2)
+    print("Final L2 norm of w: %f" % np.linalg.norm(w))
 else:
     kf = KFold(n_splits=10, shuffle=True)
     step_list = []
@@ -113,6 +113,16 @@ else:
         print("train acc: %f" % train_acc_list[-1])
         print("val acc: %f" % val_acc_list[-1])
         print("test acc: %f" % test_acc_list[-1])
-        print("L2 norm of w: %f" % np.linalg.norm(w)**2)
+        print("L2 norm of w: %f" % np.linalg.norm(w))
 
         fold += 1
+
+    w = np.mean(w_list)
+    test_acc = evaluate(test["feature"], test["label"], w)
+    print("\nFinished 10-fold")
+    print("Average step: %f" % np.mean(step_list))
+    print("Average train acc: %f" % np.mean(train_acc_list))
+    print("Average val acc: %f" % np.mean(val_acc_list))
+    print("Average test acc: %f" % np.mean(test_acc_list))
+    print("Final test acc: %f" % test_acc)
+    print("Final L2 norm of w: %f" % np.linalg.norm(w))
