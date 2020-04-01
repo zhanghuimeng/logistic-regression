@@ -51,7 +51,7 @@ def irls(train, test, lamb, patience):
             wait = 0
         else:
             wait += 1
-        ll = log_likelihood(x, y, w, lamb)
+        ll = log_likelihood(train["feature"], train["label"], w, lamb)
         print("step=%d, acc=%f, ll=%f" % (step, acc, ll))
         acc_list.append(acc)
         ll_list.append(ll)
@@ -86,6 +86,17 @@ if not args.cross:
     print("Final step: %d" % len(acc_list))
     print("Final training acc: %f" % evaluate(train["feature"], train["label"], w))
     print("Final testing acc: %f" % acc_list[-1])
-    print("Final L2 norm of w: ")
+    print("Final L2 norm of w: %f" % np.linalg.norm(w)**2)
 else:
-    pass
+    kf = KFold(n_splits=10, shuffle=True)
+    step_list = []
+    train_acc_list = []
+    val_acc_list = []
+    w_list = []
+
+    fold = 0
+    for train_index, val_index in kf.split(X):
+        x_train, x_val = train["feature"][train_index], train["feature"][val_index]
+        y_train, y_val = train["label"][train_index], train["label"][val_index]
+
+        
