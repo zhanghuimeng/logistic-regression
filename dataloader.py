@@ -3,6 +3,7 @@ import numpy as np
 
 
 def load(filename="a9a", d=123):
+    # Read a file of the a9a dataset
     with open(filename, "r") as f:
         lines = f.readlines()
     N = len(lines)
@@ -22,10 +23,11 @@ def load(filename="a9a", d=123):
     return feature, label
 
 
-# Test
-feature, label = load("a9a/a9a")
-print(feature)
-print(label)
-feature, label = load("a9a/a9a.t")
-print(feature)
-print(label)
+if __name__ == "__main__":
+    # Test
+    feature, label = load("a9a/a9a")
+    print(feature)
+    print(label)
+    feature, label = load("a9a/a9a.t")
+    print(feature)
+    print(label)
