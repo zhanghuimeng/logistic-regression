@@ -97,7 +97,7 @@ else:
     fold = 0
     fold_train = {}
     fold_val = {}
-    for train_index, val_index in kf.split(X):
+    for train_index, val_index in kf.split(train["feature"]):
         fold_train["feature"], fold_val["feature"] = train["feature"][train_index], train["feature"][val_index]
         fold_train["label"], fold_val["label"] = train["label"][train_index], train["label"][val_index]
 
@@ -117,7 +117,7 @@ else:
 
         fold += 1
 
-    w = np.mean(w_list)
+    w = np.mean(w_list, axis=0)
     test_acc = evaluate(test["feature"], test["label"], w)
     print("\nFinished 10-fold")
     print("Average step: %f" % np.mean(step_list))
